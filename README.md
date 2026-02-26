@@ -37,10 +37,11 @@ Expected:
 ## CI/CD (GitHub Actions)
 `.github/workflows/ci.yml`
 
-## Overview
-<img width="1682" height="926" alt="image" src="https://github.com/user-attachments/assets/9e1b606c-035c-4c89-8c17-ad6deebab9d6" />
-
 - Tests + JaCoCo coverage gate (80%)
 - OWASP Dependency-Check (fails build for CVSS >= 7)
 - Sonar (optional via secrets)
 - Veracode upload/scan (optional via secrets)
+
+## Overview
+<img width="1682" height="926" alt="image" src="https://github.com/user-attachments/assets/9e1b606c-035c-4c89-8c17-ad6deebab9d6" />
+
