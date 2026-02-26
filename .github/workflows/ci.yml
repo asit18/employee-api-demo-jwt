@@ -11,7 +11,7 @@ jobs:
 
     env:
       # Feature flags — flip to "true" when ready
-      RUN_SONAR: "false"
+      RUN_SONAR: "true"
       RUN_VERACODE: "false"
 
     steps:
@@ -41,9 +41,17 @@ jobs:
         continue-on-error: true
         run: mvn -B org.owasp:dependency-check-maven:check
 
-      - name: Sonar Scan (disabled)
+      - name: Sonar Scan
         if: ${{ env.RUN_SONAR == 'true' }}
-        run: echo "Sonar scan disabled"
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+          SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY }}
+        run: |
+          mvn -B sonar:sonar \
+            -Dsonar.login="$SONAR_TOKEN" \
+            -Dsonar.host.url="$SONAR_HOST_URL" \
+            -Dsonar.projectKey="$SONAR_PROJECT_KEY"
 
       - name: Package artifact (jar)
         run: mvn -B -DskipTests package
