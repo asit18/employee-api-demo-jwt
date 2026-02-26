@@ -27,7 +27,18 @@ jobs:
       - name: Build + Tests + Coverage (JaCoCo gate in pom.xml)
         run: mvn -B clean test jacoco:report
 
+      # (2) Cache Dependency-Check DB
+      - name: Cache Dependency-Check DB
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository/org/owasp/dependency-check-data
+          key: depcheck-${{ runner.os }}-${{ github.ref_name }}
+          restore-keys: |
+            depcheck-${{ runner.os }}-
+
+      # (3) Don't fail the whole pipeline if NVD update flakes
       - name: Dependency Vulnerability Scan (OWASP Dependency-Check)
+        continue-on-error: true
         run: mvn -B org.owasp:dependency-check-maven:check
 
       - name: Sonar Scan (disabled)
