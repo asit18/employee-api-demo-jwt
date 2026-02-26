@@ -1,0 +1,37 @@
+services:
+  db:
+    image: postgres:16
+    container_name: employee-db
+    environment:
+      POSTGRES_DB: employees
+      POSTGRES_USER: employee
+      POSTGRES_PASSWORD: employee
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U employee -d employees"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  api:
+    build: .
+    container_name: employee-api
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/employees
+      SPRING_DATASOURCE_USERNAME: employee
+      SPRING_DATASOURCE_PASSWORD: employee
+      DEMO_JWT_SECRET: "change-me-to-a-very-long-demo-secret-32-chars-min!!"
+    expose:
+      - "8080"
+
+  https:
+    build: ./nginx
+    container_name: employee-https
+    depends_on:
+      - api
+    ports:
+      - "8443:443"

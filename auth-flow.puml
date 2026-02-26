@@ -1,0 +1,46 @@
+@startuml
+skinparam ParticipantPadding 20
+skinparam BoxPadding 10
+
+actor Client
+participant AuthController
+participant JwtTokenService
+participant "Security Filter" as Filter
+participant JwtRolesConverter
+participant EmployeeController
+participant PermissionService
+participant RoleRepository
+database Database
+
+== Authentication ==
+
+Client -> AuthController : POST /auth/token
+AuthController -> JwtTokenService : mint(user, roles)
+JwtTokenService --> AuthController : Signed JWT
+AuthController --> Client : JWT Token
+
+== Resource Access ==
+
+Client -> Filter : Request + Bearer Token
+Filter -> Filter : Validate JWT
+Filter -> JwtRolesConverter : convert(JWT)
+JwtRolesConverter --> Filter : GrantedAuthorities
+Filter -> Filter : Set SecurityContext
+
+Filter -> EmployeeController : Forward Request
+EmployeeController -> PermissionService : hasPermission(auth, "EMPLOYEE_READ")
+PermissionService -> RoleRepository : anyRoleHasPermission(roles, "EMPLOYEE_READ")
+RoleRepository -> Database : Query Permissions
+Database --> RoleRepository : Results
+RoleRepository --> PermissionService : true/false
+PermissionService --> EmployeeController : allowed/denied
+
+alt Access Allowed
+    EmployeeController -> Database : Fetch Employee
+    Database --> EmployeeController : Entity
+    EmployeeController --> Client : 200 OK + EmployeeDto
+else Access Denied
+    EmployeeController --> Client : 403 Forbidden
+end
+
+@enduml

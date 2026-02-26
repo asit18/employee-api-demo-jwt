@@ -1,0 +1,28 @@
+server:
+  port: 8080
+
+demo:
+  jwt:
+    secret: "change-me-to-a-very-long-demo-secret-32-chars-min!!"
+
+spring:
+  application:
+    name: employee-api
+  datasource:
+    url: jdbc:postgresql://db:5432/employees
+    username: employee
+    password: employee
+  jpa:
+    hibernate:
+      ddl-auto: validate
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:schema.sql
+      data-locations: classpath:data.sql
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
