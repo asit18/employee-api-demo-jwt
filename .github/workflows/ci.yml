@@ -1,9 +1,9 @@
-name: ci
+name: Build, Test & Security
 
 on:
   push:
     branches: ["main"]
-  pull_request:
+  pull_request: {}
 
 jobs:
   build-test-security:
@@ -25,7 +25,7 @@ jobs:
         run: mvn -B org.owasp:dependency-check-maven:check
 
       - name: Sonar Scan (optional)
-        if: ${{ secrets.SONAR_TOKEN != '' }}
+        if: ${{ secrets.SONAR_TOKEN }}
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
@@ -40,7 +40,7 @@ jobs:
         run: mvn -B -DskipTests package
 
       - name: Veracode Upload & Scan (optional)
-        if: ${{ secrets.VERACODE_API_ID != '' }}
+        if: ${{ secrets.VERACODE_API_ID }}
         uses: veracode/veracode-uploadandscan-action@0.2.7
         with:
           appname: ${{ secrets.VERACODE_APP_NAME }}
