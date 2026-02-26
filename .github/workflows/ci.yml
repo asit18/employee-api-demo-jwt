@@ -39,7 +39,9 @@ jobs:
       # (3) Don't fail the whole pipeline if NVD update flakes
       - name: Dependency Vulnerability Scan (OWASP Dependency-Check)
         continue-on-error: true
-        run: mvn -B org.owasp:dependency-check-maven:check
+        env:
+          NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
+        run: mvn -B org.owasp:dependency-check-maven:check -DnvdApiKey="$NVD_API_KEY"
 
       - name: Sonar Scan
         if: ${{ env.RUN_SONAR == 'true' }}
