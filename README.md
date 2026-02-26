@@ -1,6 +1,6 @@
 # Employee API Demo (Spring Boot + Local JWT + DB permissions + HTTPS)
 
-Keycloak removed. This demo mints **real JWTs** locally (HS256) and validates them using Spring Security Resource Server.
+This demo mints **real JWTs** locally (HS256) and validates them using Spring Security Resource Server.
 
 ## Run
 ```bash
