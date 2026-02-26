@@ -49,11 +49,13 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
           SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY }}
+          SONAR_ORGANIZATION: ${{ secrets.SONAR_ORGANIZATION }}
         run: |
           mvn -B sonar:sonar \
             -Dsonar.login="$SONAR_TOKEN" \
             -Dsonar.host.url="$SONAR_HOST_URL" \
-            -Dsonar.projectKey="$SONAR_PROJECT_KEY"
+            -Dsonar.projectKey="$SONAR_PROJECT_KEY" \
+            -Dsonar.organization="$SONAR_ORGANIZATION"
 
       - name: Package artifact (jar)
         run: mvn -B -DskipTests package
